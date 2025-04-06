@@ -54,7 +54,8 @@ const scrapeYear = async (browser, year, category) => {
 			return rows.map((row) => {
 				const cells = Array.from(row.querySelectorAll("td"));
 				const textData = cells.map((cell) => cell.innerText.trim());
-				const link = row.querySelector("a")?.href || null;
+				// do we even want players that don't have their own page?
+				const link = row.querySelector("a")?.href || cells[0];
 				return { text: textData, href: link };
 			});
 		});
@@ -118,8 +119,6 @@ const main = async () => {
 	const browser = await chromium.launch();
 
 	await Promise.all(playerCategories.map((category) => run(category, browser)));
-
-	//await scrapeYear(browser, "2024", "goalkeeping");
 	await browser.close();
 };
 
