@@ -5,23 +5,29 @@ import { chromium } from "playwright";
 const sleep = async (time) =>
 	new Promise((resolve) => setTimeout(resolve, time));
 
-const gotoUrl = async (page, url) => {
-	try {
-		await page.goto(url, { timeout: 60_000 });
-	} catch (e) {
-		console.log(e);
-		await sleep(1000);
-		await gotoUrl(page, url);
-	}
+const gotoUrl = async (page, url, errorCount = 0, errorMessage = "") => {
+	if (errorCount > 10) return { isError: true, errorMessage };
 
-	await page.setViewportSize({ width: 1500, height: 1000 });
-	await page.waitForTimeout(3000);
+	try {
+		await page.goto(url, { timeout: 60_000, waitUntil: "domcontentloaded" });
+		await page.setViewportSize({ width: 1500, height: 1000 });
+		await page.waitForTimeout(3000);
+		return { isError: false };
+	} catch (e) {
+		console.log(`Retrying [${errorCount}] for: ${url}`);
+		await sleep(1000);
+		return await gotoUrl(page, url, errorCount + 1, e.message);
+	}
 };
 
 const scrapeHeadshot = async (browser, name) => {
 	const page = await browser.newPage();
 	const baseUrl = `https://www.foxsports.com/soccer/${name}-player`;
-	await gotoUrl(page, baseUrl);
+	const { isError, errorMessage } = await gotoUrl(page, baseUrl);
+	if (isError) {
+		console.log("skipping ", baseUrl, errorMessage);
+		return;
+	}
 	if (page.url() !== baseUrl) return;
 	const imageLink = await page.evaluate(() => {
 		return document.querySelector("img.image-headshot").getAttribute("src");
