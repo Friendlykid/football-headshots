@@ -7,7 +7,7 @@ const sleep = async (time) =>
 
 const gotoUrl = async (page, url) => {
 	try {
-		await page.goto(url);
+		await page.goto(url, { timeout: 60_000 });
 	} catch (e) {
 		console.log(e);
 		await sleep(1000);
