@@ -37,7 +37,7 @@ const scrapeHeadshot = async (browser, name) => {
 const CONCURRENCY_LIMIT = 10;
 
 const main = async () => {
-	const browser = await chromium.launch({ headless: true });
+	const browser = await chromium.launch({ headless: false });
 	const linksFile = await readFile(
 		path.join(process.cwd(), "data", "links_deduped.csv"),
 		{ encoding: "utf8" },
