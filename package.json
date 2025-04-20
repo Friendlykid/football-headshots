@@ -1,26 +1,23 @@
 {
-  "name": "fantasy-yahoo",
-  "version": "1.0.0",
-  "description": "",
-  "main": "src/index.js",
-  "type": "module",
-  "scripts": {
-    "dev": "node --env-file=.env src/index.js",
-    "lint": "biome lint --write ./src"
-  },
-  "keywords": [
-    "scraping",
-    "data"
-  ],
-  "author": "Jiri Kouba",
-  "license": "ISC",
-  "dependencies": {
-    "playwright": "^1.51.1",
-    "yahoo-fantasy": "^5.3.0"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "1.9.4",
-    "@playwright/test": "^1.51.1",
-    "@types/node": "^22.14.0"
-  }
+	"name": "fantasy-yahoo",
+	"version": "1.0.0",
+	"description": "",
+	"main": "src/index.js",
+	"type": "module",
+	"scripts": {
+		"dev": "node --env-file=.env src/index.js",
+		"lint": "biome lint --write ./src"
+	},
+	"keywords": ["scraping", "data"],
+	"author": "Jiri Kouba",
+	"license": "ISC",
+	"dependencies": {
+		"playwright": "^1.51.1",
+		"yahoo-fantasy": "^5.3.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"@playwright/test": "^1.51.1",
+		"@types/node": "^22.14.0"
+	}
 }
