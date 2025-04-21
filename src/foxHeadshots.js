@@ -45,6 +45,7 @@ const scrapeHeadshot = async (browser, name) => {
 		return document.querySelector("img.image-headshot")?.getAttribute?.("src");
 	});
 	if (!imageLink || imageLink.split("/").pop().startsWith("default-headshot")) {
+		console.log(imageLink, baseUrl);
 		await page.close();
 		return;
 	}
