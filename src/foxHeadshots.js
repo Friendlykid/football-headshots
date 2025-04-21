@@ -10,7 +10,10 @@ const RETRY_COUNT = Number(process.env.RETRY_COUNT ?? 5);
 
 const gotoUrl = async (page, url, name, errorCount = 0, errorMessage = "") => {
 	if (errorCount > RETRY_COUNT)
-		return { isError: true, errorMessage: "Exceeded number of retries" };
+		return {
+			isError: true,
+			errorMessage: `Exceeded number of retries\n${errorMessage}`,
+		};
 
 	try {
 		await page.goto(url, { timeout: 30_000, waitUntil: "domcontentloaded" });
