@@ -54,6 +54,7 @@ const scrapeHeadshot = async (browser, name) => {
 		await page.close();
 		return;
 	}
+	console.log("adding image to player ", name);
 	await page.locator("img").screenshot({
 		path: path.join("data", "mls_players", "headshots", `${name}.png`),
 	});
