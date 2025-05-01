@@ -7,7 +7,10 @@ import { downloadImage } from "./downloadImage.js";
 const scrapeHeadshot = async (url) => {
 	console.log("fetching: ", url);
 	const response = await fetch(url);
-	if (!response.ok) return;
+	if (!response.ok) {
+		console.log("not okay");
+		return;
+	}
 	const pageText = await response.text();
 	const dom = new JSDOM(pageText);
 	const imageLink = dom.window.document
