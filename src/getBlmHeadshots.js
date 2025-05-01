@@ -29,12 +29,29 @@ const scrapeHeadshot = async (url) => {
 const CONCURRENCY_LIMIT = 5;
 
 (async () => {
-	const linksFile = await readFile(
-		path.join(process.cwd(), "data", "bml_players", "player_links.csv"),
-		{ encoding: "utf-8" },
-	);
+	const pitch = await readFile("data/bml_players/pitching_urls.csv", {
+		encoding: "utf-8",
+	});
 
-	const links = linksFile.split("\n").map((link) => link.trim());
+	const hit = await readFile("data/bml_players/hitting_urls.csv", {
+		encoding: "utf-8",
+	});
+
+	const pitchArr = [
+		...new Set(
+			pitch.split("\n").flatMap((line) => line.replace(/,{2,}/, "").split(",")),
+		),
+	];
+
+	const hitArr = [
+		...new Set(
+			hit.split("\n").flatMap((line) => line.replace(/,{2,}/, "").split(",")),
+		),
+	];
+
+	const links = [...new Set([...pitchArr, ...hitArr])];
+
+	//const links = linksFile.split("\n").map((link) => link.trim());
 	const chunks = Array.from(
 		{ length: Math.ceil(links.length / CONCURRENCY_LIMIT) },
 		(_, i) =>
