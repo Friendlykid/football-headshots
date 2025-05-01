@@ -1,9 +1,11 @@
+import { existsSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { JSDOM } from "jsdom";
 import { downloadImage } from "./downloadImage.js";
 
 const scrapeHeadshot = async (url) => {
+	console.log("fetching: ", url);
 	const response = await fetch(url);
 	if (!response.ok) return;
 	const pageText = await response.text();
@@ -11,18 +13,30 @@ const scrapeHeadshot = async (url) => {
 	const imageLink = dom.window.document
 		.querySelector("img.player-headshot")
 		?.getAttribute?.("src");
+	console.log("image link: ", imageLink);
 
 	if (!imageLink) return;
 
+	const name = url
+		.replace("https://www.mlb.com/player/", "")
+		.replace(/-\d+/, "");
+
+	if (
+		existsSync(
+			path.join(
+				process.cwd(),
+				"data",
+				"bml_players",
+				"headshots",
+				`${name}.png`,
+			),
+		)
+	) {
+		return;
+	}
 	await downloadImage(
 		imageLink.replace("w_213", "w_450"),
-		path.join(
-			process.cwd(),
-			"data",
-			"bml_players",
-			"headshots",
-			`${url.replace("https://www.mlb.com/player/", "").replace(/-\d+/, "")}.png`,
-		),
+		path.join(process.cwd(), "data", "bml_players", "headshots", `${name}.png`),
 	);
 };
 
@@ -56,16 +70,6 @@ const CONCURRENCY_LIMIT = 5;
 	];
 
 	const links = [...new Set([...pitchArr, ...hitArr])];
-
-	//const links = linksFile.split("\n").map((link) => link.trim());
-	const chunks = Array.from(
-		{ length: Math.ceil(links.length / CONCURRENCY_LIMIT) },
-		(_, i) =>
-			links.slice(
-				i * CONCURRENCY_LIMIT,
-				i * CONCURRENCY_LIMIT + CONCURRENCY_LIMIT,
-			),
-	);
 
 	for await (const link of links) {
 		await scrapeHeadshot(link);
